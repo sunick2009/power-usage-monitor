@@ -22,9 +22,16 @@ namespace power_usage_monitor.Controllers
 
         // GET: api/Usage
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Usage>>> GetUsages()
+        public async Task<ActionResult<IEnumerable<Usage?>>> GetUsages()
         {
-            return await _context.Usages.ToListAsync();
+            var curDataTime = await _context.Usages.OrderBy(e => e.Time).LastAsync();
+            DateTime curTime = curDataTime.Time;
+            var curUsage =  _context.Usages.GroupBy(e => e.DeviceId)
+                .Select(gr => 
+                gr.Where(e => e.Time == curTime)
+                .FirstOrDefault())
+                .AsEnumerable().ToList();
+            return curUsage;
         }
 
         // GET: api/Usage/5
