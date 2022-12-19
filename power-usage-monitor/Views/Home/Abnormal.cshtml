@@ -1,0 +1,59 @@
+﻿@model IEnumerable<power_usage_monitor.Models.Abnormal>
+
+@{
+    ViewData["Title"] = "Abnormal";
+}
+
+<h1>Abnormal</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DeviceId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AbnormalUsage)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AbnormalTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AbnormalNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NoticedUserNavigation)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.DeviceId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AbnormalUsage)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AbnormalTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AbnormalNavigation.DeviceId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NoticedUserNavigation.UserName)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.AbnormalId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.AbnormalId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.AbnormalId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

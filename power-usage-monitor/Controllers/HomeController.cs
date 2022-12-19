@@ -18,7 +18,7 @@ namespace power_usage_monitor.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult Abnormal()
         {
             return View();
         }
