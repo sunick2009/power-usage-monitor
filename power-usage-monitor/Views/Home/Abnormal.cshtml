@@ -3,8 +3,38 @@
 @{
     ViewData["Title"] = "Abnormal";
 }
-
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://unpkg.com/cal-heatmap@4.0.0-beta.1/dist/cal-heatmap.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/cal-heatmap@4.0.0-beta.1/dist/cal-heatmap.css">
 <h1>Abnormal</h1>
+<div id="cal-heatmap"></div>
+<script>
+    const cal = new CalHeatmap();
+    type Options = {
+        itemSelector: Element | string,
+        range: 6,
+        domain: DomainOptions,
+        subDomain: SubDomainOptions,
+        verticalOrientation: boolean,
+        date: DateOptions,
+        data: DataOptions,
+        label: LabelOptions,
+        animationDuration: number,
+        tooltip: TooltipOptions,
+        legend: LegendOptions,
+        scale: ScaleOptions,
+    };
+    type DomainOptions: {
+      type: day;
+      gutter: 29;
+      padding: [8, 8, 0, 8];
+      dynamicDimension: true;
+      label: LabelOptions;
+      subLabel: SubLabelOptions;
+      sort: 'asc' | 'desc';
+    }
+    cal.paint(Options);
+</script>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -20,9 +50,6 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.AbnormalTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AbnormalNavigation)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.NoticedUserNavigation)
@@ -41,9 +68,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.AbnormalTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AbnormalNavigation.DeviceId)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.NoticedUserNavigation.UserName)
