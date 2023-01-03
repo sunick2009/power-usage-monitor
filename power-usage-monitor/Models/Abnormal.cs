@@ -8,10 +8,10 @@ namespace power_usage_monitor.Models
         public int AbnormalId { get; set; }
         public int DeviceId { get; set; }
         public double AbnormalUsage { get; set; }
-        public string AbnormalTime { get; set; } = null!;
+        public DateTime AbnormalTime { get; set; }
         public string? NoticedUser { get; set; }
 
-        public virtual Device AbnormalNavigation { get; set; } = null!;
+        public virtual Device Device { get; set; } = null!;
         public virtual User? NoticedUserNavigation { get; set; }
     }
 }
