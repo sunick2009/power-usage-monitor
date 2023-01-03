@@ -22,7 +22,7 @@ namespace power_usage_monitor.Controllers
         public async Task<IActionResult> Index()
         {
 
-            var power_usage_monitorContext = _context.Devices.Include(d => d.Category);
+            var power_usage_monitorContext = _context.Devices;
             return View(await power_usage_monitorContext.ToListAsync());
 
         }
@@ -36,7 +36,6 @@ namespace power_usage_monitor.Controllers
             }
 
             var device = await _context.Devices
-                .Include(d => d.Category)
                 .FirstOrDefaultAsync(m => m.DeviceId == id);
             if (device == null)
             {
@@ -115,8 +114,13 @@ namespace power_usage_monitor.Controllers
             {
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
+            ModelState.Clear();
+            device.StandbyTime = await (from m in _context.Devices where m.DeviceId == device.DeviceId
+                select m.StandbyTime).SingleOrDefaultAsync();
+            //device.Category = await (from m in _context.Categories
+            //                         where m.CategoryId == device.CategoryId
+            //                         select m).SingleOrDefaultAsync();
+            if (TryValidateModel(device))
             {
                 try
                 {
@@ -149,7 +153,6 @@ namespace power_usage_monitor.Controllers
             }
 
             var device = await _context.Devices
-                .Include(d => d.Category)
                 .FirstOrDefaultAsync(m => m.DeviceId == id);
             if (device == null)
             {
