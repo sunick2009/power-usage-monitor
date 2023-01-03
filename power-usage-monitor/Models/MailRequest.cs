@@ -23,7 +23,7 @@ namespace power_usage_monitor.Models
         {
             // create message
             var email = new MimeMessage();
-            email.From.Add(MailboxAddress.Parse(from ?? _config.GetSection("MailSettings:MailAddress").Value));
+            email.From.Add(MailboxAddress.Parse(from ?? _config.GetSection("MailSettings:Mail").Value));
             email.To.Add(MailboxAddress.Parse(to));
             email.Subject = subject;
             email.Body = new TextPart(TextFormat.Html) { Text = html };

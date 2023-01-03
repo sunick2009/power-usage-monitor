@@ -7,6 +7,7 @@ namespace power_usage_monitor.Models
     {
         public Device()
         {
+            Abnormals = new HashSet<Abnormal>();
             Statistics = new HashSet<Statistic>();
             Usages = new HashSet<Usage>();
         }
@@ -19,7 +20,7 @@ namespace power_usage_monitor.Models
         public int CategoryId { get; set; }
 
         public virtual Category Category { get; set; } = null!;
-        public virtual Abnormal? Abnormal { get; set; }
+        public virtual ICollection<Abnormal> Abnormals { get; set; }
         public virtual ICollection<Statistic> Statistics { get; set; }
         public virtual ICollection<Usage> Usages { get; set; }
     }

@@ -1,22 +1,22 @@
-using Highsoft.Web.Mvc.Charts;
-using Microsoft.EntityFrameworkCore;
+ï»¿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NETCore.MailKit.Core;
 using power_usage_monitor.Models;
 using System.Configuration;
 using IEmailService = power_usage_monitor.Models.IEmailService;
+using power_usage_monitor.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-//¥[¤Je-mailµo°eªA°È
+//åŠ å…¥e-mailç™¼é€æœå‹™
 builder.Services.AddTransient<IEmailService, MailRequest>();
-//¥[¤J¸ê®Æ¦¬¶°­I´ºªA°È
+//åŠ å…¥è³‡æ–™æ”¶é›†èƒŒæ™¯æœå‹™
 builder.Services.AddHostedService<power_usage_monitor.Controllers.DataCollecterService>();
-//¥[¤J¸ê®Æ©w´Á¤ÀªR­I´ºªA°È
-builder.Services.AddTransient<IHostedService, power_usage_monitor.Controllers.DataAnalyzerService>();
-//¥[¤Jµ¹¸ê®Æ®wªºDI
+//åŠ å…¥è³‡æ–™å®šæœŸåˆ†æèƒŒæ™¯æœå‹™
+//builder.Services.AddTransient<IHostedService, power_usage_monitor.Controllers.DataAnalyzerService>();
+//åŠ å…¥çµ¦è³‡æ–™åº«çš„DI
 builder.Services.AddDbContext<power_usage_monitorContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultDatabase") ?? 
     throw new InvalidOperationException("Connection string 'DefaultDatabase' not found.")));

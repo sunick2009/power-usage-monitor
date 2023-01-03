@@ -1,129 +1,104 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<power_usage_monitor.Models.Device>
+@{
+    ViewData["Title"] = "即時電力數據 - 電力監控系統";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">即時電力數據</h1>
+    <p>每30更新一次</p>
 </div>
-
-@using Highsoft.Web.Mvc.Charts
-@using Highsoft.Web.Mvc.Charts.Rendering
-
-<script type="text/javascript">
-
-    function initChart() {
-
-        var data = generateInitialData();
-
-        // set up the updating of the chart each second
-        var series = this.series[0];
-
-        series.setData(data);
-
-        setInterval(function () {
-            var x = (new Date()).getTime(), // current time
-                y = Math.random();
-            series.addPoint([x, y], true, true);
-        }, 1000);
-    }
-
-    function formatTooltip() {
-        return '<b>' + this.series.name + '</b><br/>' +
-            Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
-            Highcharts.numberFormat(this.y, 2);
-    }
-
-    function generateInitialData() {
-
-        // generate an array of random data
-        var data = [],
-            time = (new Date()).getTime(),
-            i;
-
-        for (i = -19; i <= 0; i += 1) {
-            data.push({
-                x: time + i * 1000,
-                y: Math.random()
-            });
-        }
-        return data;
-
-    }
-
-</script>
-
-
-@{
-    var chartOptions =
-       new Highcharts
-               {
-                   Chart = new Highsoft.Web.Mvc.Charts.Chart
-                   {
-                       Type = ChartType.Spline,
-                       Animation = new Animation
-                       {
-                       },
-                       MarginRight = 10,
-                       Events = new ChartEvents
-                       {
-                           Load = "initChart"
-                       }
-                   },
-                   Title = new Title
-                   {
-                       Text = "Live Random Data"
-                   },
-                   XAxis = new List<XAxis>
-                       {
-                new XAxis
-                {
-                    Type = "datetime",
-                    TickPixelInterval = 150
-                }
-                                               },
-                   YAxis = new List<YAxis>
-                       {
-                new YAxis
-                {
-                    Title = new YAxisTitle
-                    {
-                        Text = "Value"
-                    },
-                    PlotLines =  new List<YAxisPlotLines>
-{
-                        new YAxisPlotLines
-                        {
-                            Value = 0,
-                            Width = 1,
-                            Color = "#808080"
-                        }
-                    }
-                }
-                                               },
-                   Tooltip = new Tooltip
-                   {
-                       Formatter = "formatTooltip"
-                   },
-                   Legend = new Legend
-                   {
-                       Enabled = false
-                   },
-                   Exporting = new Exporting
-                   {
-                       Enabled = false
-                   },
-                   Series = new List<Series>
-                       {
-                new SplineSeries
-                {
-                    Name = "Random Data"
-                }
-                                               }
-               };
-
-    chartOptions.ID = "chart";
-    var renderer = new HighchartsRenderer(chartOptions);
-}
-
-@Html.Raw(renderer.RenderHtml())
+<head>
+	<script type="text/javascript">
+		window.onload = function () {
+			var dataPoints1 = []; var dataPoints2 = []; var dataPoints3 = [];var dataPoints4 = [];var dataPoints5 = [];var dataPoints6 = [];
+			var  chart1, chart2, chart3, chart4, chart5, chart6;
+			$.getJSON("http://localhost:5241/api/usage", function (data) {
+				dataPoints1.push({ x: 0, y: parseInt(data[0][1]) });
+				dataPoints2.push({ x: 0, y: parseInt(data[1][1]) });
+				dataPoints3.push({ x: 0, y: parseInt(data[2][1]) });
+				dataPoints4.push({ x: 0, y: parseInt(data[3][1]) });
+				dataPoints5.push({ x: 0, y: parseInt(data[4][1]) });
+				dataPoints6.push({ x: 0, y: parseInt(data[5][1]) });
+				chart1 = new CanvasJS.Chart("chartContainer1", {
+						title: {
+						text: "@ViewData["plug0"]"
+						},
+						data: [{
+							type: "line",
+							dataPoints: dataPoints1,
+						}]
+				});
+				chart2 = new CanvasJS.Chart("chartContainer2", {
+					title: {
+						text: "@ViewData["plug1"]"
+					},
+					data: [{
+						type: "line",
+						dataPoints: dataPoints2,
+					}]
+				});
+				chart3 = new CanvasJS.Chart("chartContainer3", {
+					title: {
+						text: "@ViewData["plug2"]"
+					},
+					data: [{
+						type: "line",
+						dataPoints: dataPoints3,
+					}]
+				});
+				chart4 = new CanvasJS.Chart("chartContainer4", {
+					title: {
+						text: "@ViewData["plug3"]"
+					},
+					data: [{
+						type: "line",
+						dataPoints: dataPoints4,
+					}]
+				});
+				chart5 = new CanvasJS.Chart("chartContainer5", {
+					title: {
+						text: "@ViewData["plug4"]"
+					},
+					data: [{
+						type: "line",
+						dataPoints: dataPoints5,
+					}]
+				});
+				chart6 = new CanvasJS.Chart("chartContainer6", {
+					title: {
+						text: "@ViewData["plug5"]"
+					},
+					data: [{
+						type: "line",
+						dataPoints: dataPoints6,
+					}]
+				});
+				chart1.render();chart2.render();chart3.render();chart4.render();chart5.render();chart6.render();
+				updateChart();
+			});
+			function updateChart() {
+				$.getJSON("http://localhost:5241/api/usage", function (data) {
+					let lastTime = dataPoints1[dataPoints1.length -1]['x'] + 30;
+					dataPoints1.push({ x: lastTime, y: parseInt(data[0][1]) });
+					dataPoints2.push({ x: lastTime, y: parseInt(data[1][1]) });
+					dataPoints3.push({ x: lastTime, y: parseInt(data[2][1]) });
+					dataPoints4.push({ x: lastTime, y: parseInt(data[3][1]) });
+					dataPoints5.push({ x: lastTime, y: parseInt(data[4][1]) });
+					dataPoints6.push({ x: lastTime, y: parseInt(data[5][1]) });
+					chart1.render(); chart2.render(); chart3.render(); chart4.render(); chart5.render(); chart6.render();
+					setTimeout(function () { updateChart() }, 30000);
+				});
+			}
+		}
+	</script>
+	<script type="text/javascript" src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+</head>
+<body>
+	<div id="chartContainer1" style="width: 45%; height: 300px;display: inline-block;"></div>
+	<div id="chartContainer2" style="width: 45%; height: 300px;display: inline-block;"></div>
+	<div id="chartContainer3" style="width: 45%; height: 300px;display: inline-block;"></div>
+	<div id="chartContainer4" style="width: 45%; height: 300px;display: inline-block;"></div>
+	<div id="chartContainer5" style="width: 45%; height: 300px;display: inline-block;"></div>
+	<div id="chartContainer6" style="width: 45%; height: 300px;display: inline-block;"></div>
+</body>

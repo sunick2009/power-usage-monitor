@@ -29,12 +29,10 @@ namespace power_usage_monitor.Models
             {
                 entity.ToTable("Abnormal");
 
-                entity.Property(e => e.AbnormalId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("Abnormal_ID");
+                entity.Property(e => e.AbnormalId).HasColumnName("Abnormal_ID");
 
                 entity.Property(e => e.AbnormalTime)
-                    .HasMaxLength(50)
+                    .HasColumnType("datetime")
                     .HasColumnName("Abnormal_Time");
 
                 entity.Property(e => e.AbnormalUsage).HasColumnName("Abnormal_Usage");
@@ -45,9 +43,9 @@ namespace power_usage_monitor.Models
                     .HasMaxLength(50)
                     .HasColumnName("Noticed_User");
 
-                entity.HasOne(d => d.AbnormalNavigation)
-                    .WithOne(p => p.Abnormal)
-                    .HasForeignKey<Abnormal>(d => d.AbnormalId)
+                entity.HasOne(d => d.Device)
+                    .WithMany(p => p.Abnormals)
+                    .HasForeignKey(d => d.DeviceId)
                     .HasConstraintName("FK_Abnormal_Device");
 
                 entity.HasOne(d => d.NoticedUserNavigation)

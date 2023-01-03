@@ -25,20 +25,20 @@
             </div>
             <div class="form-group">
                 <label asp-for="Status" class="control-label"></label>
-                <select class="form-control" id="Status">
-                    <option>On</option>
-                    <option>Off</option>
+                <select asp-for="Status" class="form-control" id="Status">
+                    <option value="1">On</option>
+                    <option value="0">Off</option>
                 </select>
             </div>
             <div class="form-group">
                 <label asp-for="CategoryId" class="control-label"></label>
-                <select class="form-control" id="CategoryId">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
+                <select asp-for="CategoryId" class="form-control" id="CategoryId">
+                    <option  value="1"> 1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
                 </select>
             </div>
-            
+            <label asp-for="CategoryId" class="control-label" va hidden></label>
             <br>
 
             <div class="form-group">
