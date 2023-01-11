@@ -39,10 +39,6 @@ namespace power_usage_monitor.Models
 
                 entity.Property(e => e.DeviceId).HasColumnName("Device_ID");
 
-                entity.Property(e => e.NoticedUser)
-                    .HasMaxLength(50)
-                    .HasColumnName("Noticed_User");
-
                 entity.HasOne(d => d.Device)
                     .WithMany(p => p.Abnormals)
                     .HasForeignKey(d => d.DeviceId)
