@@ -7,12 +7,12 @@ namespace power_usage_monitor.Models
     {
         public User()
         {
-            Abnormals = new HashSet<Abnormal>();
+            Devices = new HashSet<Device>();
         }
 
         public string UserName { get; set; } = null!;
         public string UserEmail { get; set; } = null!;
 
-        public virtual ICollection<Abnormal> Abnormals { get; set; }
+        public virtual ICollection<Device> Devices { get; set; }
     }
 }

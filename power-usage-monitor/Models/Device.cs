@@ -18,8 +18,10 @@ namespace power_usage_monitor.Models
         public string UseTime { get; set; } = null!;
         public string Status { get; set; } = null!;
         public int CategoryId { get; set; }
+        public string? UserName { get; set; }
 
         public virtual Category Category { get; set; } = null!;
+        public virtual User? UserNameNavigation { get; set; }
         public virtual ICollection<Abnormal> Abnormals { get; set; }
         public virtual ICollection<Statistic> Statistics { get; set; }
         public virtual ICollection<Usage> Usages { get; set; }
