@@ -15,7 +15,7 @@ builder.Services.AddTransient<IEmailService, MailRequest>();
 //加入資料收集背景服務
 builder.Services.AddHostedService<power_usage_monitor.Controllers.DataCollecterService>();
 //加入資料定期分析背景服務
-//builder.Services.AddTransient<IHostedService, power_usage_monitor.Controllers.DataAnalyzerService>();
+builder.Services.AddTransient<IHostedService, power_usage_monitor.Controllers.DataAnalyzerService>();
 //加入給資料庫的DI
 builder.Services.AddDbContext<power_usage_monitorContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultDatabase") ?? 
