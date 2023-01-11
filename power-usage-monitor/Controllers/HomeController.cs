@@ -17,7 +17,7 @@ namespace power_usage_monitor.Controllers
 
 		public async Task<IActionResult> Index()
 		{
-			var power_usage_monitorContext = _context.Devices.Include(d => d.Category).OrderBy(e => e.DeviceId);
+			var power_usage_monitorContext = _context.Devices.OrderBy(e => e.DeviceId);
             foreach (var item in power_usage_monitorContext)
             {
                 ViewData["plug"+(item.DeviceId-1).ToString()] = item.DeviceName;
@@ -25,9 +25,20 @@ namespace power_usage_monitor.Controllers
 			return View(await power_usage_monitorContext.ToListAsync());
         }
 
-        public IActionResult Abnormal()
+        public async Task<IActionResult> Abnormal()
         {
-            return View();
+            var power_usage_monitorContext = _context.Abnormals.AsNoTracking()
+                .OrderByDescending(e => e.AbnormalTime).ToListAsync();
+            foreach (var item in await power_usage_monitorContext)
+            {
+                item.Device = (from m in _context.Devices
+                                 where m.DeviceId == item.DeviceId
+                                 select m).SingleOrDefault();
+                item.Device.Category = (from m in _context.Categories
+                                        where m.CategoryId == item.Device.CategoryId
+                                        select m).AsNoTracking().SingleOrDefault();
+            }
+            return View(await power_usage_monitorContext);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
