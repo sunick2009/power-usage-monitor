@@ -39,20 +39,10 @@ namespace power_usage_monitor.Models
 
                 entity.Property(e => e.DeviceId).HasColumnName("Device_ID");
 
-                entity.Property(e => e.NoticedUser)
-                    .HasMaxLength(50)
-                    .HasColumnName("Noticed_User");
-
                 entity.HasOne(d => d.Device)
                     .WithMany(p => p.Abnormals)
                     .HasForeignKey(d => d.DeviceId)
                     .HasConstraintName("FK_Abnormal_Device");
-
-                entity.HasOne(d => d.NoticedUserNavigation)
-                    .WithMany(p => p.Abnormals)
-                    .HasForeignKey(d => d.NoticedUser)
-                    .OnDelete(DeleteBehavior.SetNull)
-                    .HasConstraintName("FK_Abnormal_User");
             });
 
             modelBuilder.Entity<Category>(entity =>
@@ -92,11 +82,21 @@ namespace power_usage_monitor.Models
 
                 entity.Property(e => e.UseTime).HasMaxLength(50);
 
+                entity.Property(e => e.UserName)
+                    .HasMaxLength(50)
+                    .HasColumnName("User_Name");
+
                 entity.HasOne(d => d.Category)
                     .WithMany(p => p.Devices)
                     .HasForeignKey(d => d.CategoryId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Device_Category");
+
+                entity.HasOne(d => d.UserNameNavigation)
+                    .WithMany(p => p.Devices)
+                    .HasForeignKey(d => d.UserName)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_Device_User");
             });
 
             modelBuilder.Entity<Statistic>(entity =>

@@ -1,36 +1,35 @@
 ﻿@model power_usage_monitor.Models.User
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "新增使用者";
 }
 
-<h1>Create</h1>
+<h1>新增使用者</h1>
 
-<h4>User</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="UserName" class="control-label"></label>
+                <label @*asp-for="UserName"*@ class="control-label">使用者名稱</label>
                 <input asp-for="UserName" class="form-control" />
                 <span asp-validation-for="UserName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="UserEmail" class="control-label"></label>
+                <label @*asp-for="UserEmail"*@ class="control-label">使用者E-mail</label>
                 <input asp-for="UserEmail" class="form-control" />
                 <span asp-validation-for="UserEmail" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="新增" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">回到用戶列表</a>
 </div>
 
 @section Scripts {

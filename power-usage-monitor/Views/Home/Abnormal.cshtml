@@ -1,12 +1,12 @@
 ﻿@model IEnumerable<power_usage_monitor.Models.Abnormal>
 
 @{
-    ViewData["Title"] = "Abnormal";
+    ViewData["Title"] = "異常列表";
 }
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script src="https://unpkg.com/cal-heatmap@4.0.0-beta.1/dist/cal-heatmap.min.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/cal-heatmap@4.0.0-beta.1/dist/cal-heatmap.css">
-<h1>Abnormal</h1>
+<h1>異常列表</h1>
 <div id="cal-heatmap"></div>
 <script>
     const cal = new CalHeatmap();
@@ -36,23 +36,20 @@
     cal.paint(Options);
 </script>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.DeviceId)
+                設備編號(插座編號)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.AbnormalUsage)
+                異常耗電量
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.AbnormalTime)
+                異常發生時間
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.NoticedUserNavigation)
+                原因
             </th>
             <th></th>
         </tr>
@@ -70,13 +67,26 @@
                 @Html.DisplayFor(modelItem => item.AbnormalTime)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.NoticedUserNavigation.UserName)
+                    @{
+                        string html = @"<input type=""checkbox"" checked  readonly>超過使用時間 ";
+                        if (item.AbnormalUsage >= item.Device.Category.CategoryAvgPower)
+                        {
+                            html += @"<input type=""checkbox"" checked readonly>超過分類(" 
+                            + item.Device.Category.CategoryAvgPower + "W)耗電"
+                            + "(>=" + (item.AbnormalUsage - item.Device.Category.CategoryAvgPower).ToString("f3") + " W)";
+                        }
+                        else
+                        {
+                            html += @"<input type=""checkbox""  readonly>超過分類耗電";
+                        }
+                        @Html.Raw(html);
+                    }
             </td>
-            <td>
+@*            <td>
                 <a asp-action="Edit" asp-route-id="@item.AbnormalId">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.AbnormalId">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.AbnormalId">Delete</a>
-            </td>
+            </td>*@
         </tr>
 }
     </tbody>

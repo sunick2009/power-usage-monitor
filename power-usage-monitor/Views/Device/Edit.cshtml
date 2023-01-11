@@ -1,12 +1,11 @@
 ﻿@model power_usage_monitor.Models.Device
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "編輯設備";
 }
 
-<h1>Edit</h1>
+<h1>編輯設備</h1>
 
-<h4>Device</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -14,42 +13,41 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="DeviceId" />
             <div class="form-group">
-                <label asp-for="DeviceName" class="control-label"></label>
-                <input asp-for="DeviceName" class="form-control" />
+                <label asp-for="DeviceName" class="control-label" hidden></label>
+                <input asp-for="DeviceName" class="form-control" hidden/>
                 <span asp-validation-for="DeviceName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="UseTime" class="control-label"></label>
-                <input asp-for="UseTime" class="form-control" />
+                <label asp-for="UseTime" class="control-label" hidden></label>
+                <input asp-for="UseTime" class="form-control" hidden/>
                 <span asp-validation-for="UseTime" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
+                <label @*asp-for="Status"*@ class="control-label">狀態</label>
                 <select asp-for="Status" class="form-control" id="Status">
                     <option value="1">On</option>
                     <option value="0">Off</option>
                 </select>
             </div>
             <div class="form-group">
-                <label asp-for="CategoryId" class="control-label"></label>
-                <select asp-for="CategoryId" class="form-control" id="CategoryId">
-                    <option  value="1"> 1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                </select>
+                <label asp-for="CategoryId" class="control-label" hidden></label>
+                <select asp-for="CategoryId" class="form-control" asp-items='ViewBag.categoryList' hidden></select>
             </div>
-            <label asp-for="CategoryId" class="control-label" va hidden></label>
+            <div class="form-group">
+                <label asp-for="UserName" class="control-label" hidden></label>
+                <select asp-for="UserName" class="form-control" asp-items='ViewBag.userList' hidden></select>
+            </div>
             <br>
 
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="儲存" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">回到選單</a>
 </div>
 
 @section Scripts {

@@ -1,0 +1,42 @@
+﻿@model power_usage_monitor.Models.Category
+
+@{
+    ViewData["Title"] = "分類新增";
+}
+
+<h1>分類新增</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="EngneryName" class="control-label"></label>
+                <input asp-for="EngneryName" class="form-control" value="0" hidden/>
+                <span asp-validation-for="EngneryName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label @*asp-for="DeviceCategoryName"*@ class="control-label">分類名稱</label>
+                <input asp-for="DeviceCategoryName" class="form-control" />
+                <span asp-validation-for="DeviceCategoryName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label @*asp-for="CategoryAvgPower"*@ class="control-label">分類平均使用瓦數</label>
+                <input asp-for="CategoryAvgPower" class="form-control" />
+                <span asp-validation-for="CategoryAvgPower" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="新增" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@*<div>
+    <a asp-action="Index">Back to List</a>
+</div>*@
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

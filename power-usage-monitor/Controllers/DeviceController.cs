@@ -19,12 +19,34 @@ namespace power_usage_monitor.Controllers
         }
 
         // GET: Device
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? message)
         {
-
-            var power_usage_monitorContext = _context.Devices;
-            return View(await power_usage_monitorContext.ToListAsync());
-
+            if (!(message is null))
+            {
+                TempData["message"] = message;
+            }
+            var power_usage_monitorContext = _context.Devices.AsNoTracking().ToListAsync();
+            foreach (var item in await power_usage_monitorContext)
+            {
+                item.Category = (from m in _context.Categories
+                                         where m.CategoryId == item.CategoryId
+                                         select m).SingleOrDefault();
+            }
+            //插座清單
+            List<SelectListItem> deviceList = new List<SelectListItem>();
+            for (int i = 1; i <= 6; i++)
+            {
+                var device = (from m in _context.Devices
+                              where m.DeviceId == i
+                              select m).FirstOrDefault();
+                if (device == null)
+                {
+                    deviceList.Add(new SelectListItem { Text = i.ToString(), Value = i.ToString() });
+                }
+            }
+            ViewBag.deviceList = deviceList;
+            ViewBag.deviceTotal = 6 - deviceList.Count;
+            return View(await power_usage_monitorContext);
         }
 
         // GET: Device/Details/5
@@ -45,27 +67,59 @@ namespace power_usage_monitor.Controllers
             return View(device);
         }
 
-        // GET: Device/Create
-        public IActionResult Create()
+        // POST: Categories/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateCategory([Bind("CategoryId,EngneryName,DeviceCategoryName,CategoryAvgPower")] Category category)
         {
-           /* List<SelectListItem> CategoryId = new()
+            ModelState.Clear();
+            category.EngneryName = (_context.Categories.Count() + 1).ToString();
+            if (TryValidateModel(category))
             {
-                new SelectListItem { Value = "1", Text = "1" },
-                new SelectListItem { Value = "2", Text = "2" },
-                new SelectListItem { Value = "3", Text = "3" },
-                new SelectListItem { Value = "4", Text = "4" },
-                new SelectListItem { Value = "5", Text = "5" },
-                new SelectListItem { Value = "6", Text = "6" },
-                new SelectListItem { Value = "7", Text = "7" },
-                new SelectListItem { Value = "8", Text = "8" },
-                new SelectListItem { Value = "9", Text = "9" },
-                new SelectListItem { Value = "10", Text = "10" }
-            };
-
-            //assigning SelectListItem to view Bag
-            ViewBag.CategoryId = CategoryId;
-           
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId");*/
+                _context.Add(category);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Create", "Device", new { message = "已建立分類" });
+            }
+            return RedirectToAction("Create", "Device", new { message = "建立失敗" }); 
+        }
+        // GET: Device/Create
+        public IActionResult Create(string? message)
+        {
+            if (!(message is null))
+            {
+                TempData["message"] = message;
+            }
+            //插座清單
+            List<SelectListItem> deviceList = new List<SelectListItem>();
+            for (int i = 1; i <= 6; i++)
+            {
+                var device = (from m in _context.Devices
+                              where m.DeviceId == i
+                              select m).FirstOrDefault();
+                if (device == null)
+                {
+                    deviceList.Add(new SelectListItem { Text = i.ToString(), Value = i.ToString() });
+                }
+            }
+            ViewBag.deviceList = deviceList;
+            //分類清單
+            var categories = _context.Categories.ToList();
+            List<SelectListItem> categoryList = new List<SelectListItem>();
+            foreach (var item in categories)
+            {
+                categoryList.Add(new SelectListItem { Text = item.DeviceCategoryName, Value = item.CategoryId.ToString() });
+            }
+            ViewBag.categoryList = categoryList;
+            //用戶清單
+            var users = _context.Users.ToList();
+            List<SelectListItem> userList = new List<SelectListItem>();
+            foreach (var item in users)
+            {
+                userList.Add(new SelectListItem { Text = item.UserName.ToString(), Value = item.UserName.ToString() });
+            }
+            ViewBag.userList = userList;
             return View();
         }
 
@@ -74,15 +128,21 @@ namespace power_usage_monitor.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DeviceId,DeviceName,StandbyTime,UseTime,Status,CategoryId")] Device device)
+        public async Task<IActionResult> Create(
+            [Bind("DeviceId,DeviceName,StandbyTime,UseTime,Status,CategoryId,UserName")] Device device)
         {
-            if (ModelState.IsValid)
+            ModelState.Clear();
+            device.StandbyTime = "00:00-23:59";
+            device.Category = await (from m in _context.Categories
+                                     where m.CategoryId == device.CategoryId
+                                     select m).SingleOrDefaultAsync();
+            if (TryValidateModel(device))
             {
                 _context.Add(device);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Device", new { message = "新增成功" });
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId", device.CategoryId);
+            TempData["message"] = "新增失敗";
             return View(device);
         }
 
@@ -99,7 +159,22 @@ namespace power_usage_monitor.Controllers
             {
                 return NotFound();
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId", device.CategoryId);
+            //分類清單
+            var categories = _context.Categories.ToList();
+            List<SelectListItem> categoryList = new List<SelectListItem>();
+            foreach (var item in categories)
+            {
+                categoryList.Add(new SelectListItem { Text = item.DeviceCategoryName, Value = item.CategoryId.ToString() });
+            }
+            ViewBag.categoryList = categoryList;
+            //用戶清單
+            var users = _context.Users.ToList();
+            List<SelectListItem> userList = new List<SelectListItem>();
+            foreach (var item in users)
+            {
+                userList.Add(new SelectListItem { Text = item.UserName.ToString(), Value = item.UserName.ToString() });
+            }
+            ViewBag.userList = userList;
             return View(device);
         }
 
@@ -108,7 +183,7 @@ namespace power_usage_monitor.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("DeviceId,DeviceName,StandbyTime,UseTime,Status,CategoryId")] Device device)
+        public async Task<IActionResult> Edit(int id, [Bind("DeviceId,DeviceName,StandbyTime,UseTime,Status,CategoryId,UserName")] Device device)
         {
             if (id != device.DeviceId)
             {
@@ -117,9 +192,9 @@ namespace power_usage_monitor.Controllers
             ModelState.Clear();
             device.StandbyTime = await (from m in _context.Devices where m.DeviceId == device.DeviceId
                 select m.StandbyTime).SingleOrDefaultAsync();
-            //device.Category = await (from m in _context.Categories
-            //                         where m.CategoryId == device.CategoryId
-            //                         select m).SingleOrDefaultAsync();
+            device.Category = await (from m in _context.Categories
+                                     where m.CategoryId == device.CategoryId
+                                     select m).SingleOrDefaultAsync();
             if (TryValidateModel(device))
             {
                 try
@@ -140,7 +215,6 @@ namespace power_usage_monitor.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId", device.CategoryId);
             return View(device);
         }
 
@@ -176,14 +250,14 @@ namespace power_usage_monitor.Controllers
             {
                 _context.Devices.Remove(device);
             }
-            
+            //回復刪除設備
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { message = "已刪除該設備" });
         }
 
         private bool DeviceExists(int id)
         {
-          return _context.Devices.Any(e => e.DeviceId == id);
+            return _context.Devices.Any(e => e.DeviceId == id);
         }
     }
 }

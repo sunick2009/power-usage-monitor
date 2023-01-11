@@ -19,9 +19,13 @@ namespace power_usage_monitor.Controllers
         }
 
         // GET: User
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? message)
         {
-              return View(await _context.Users.ToListAsync());
+            if (!(message is null))
+            {
+                TempData["message"] = message;
+            }
+            return View(await _context.Users.ToListAsync());
         }
 
         // GET: User/Details/5
@@ -59,7 +63,7 @@ namespace power_usage_monitor.Controllers
             {
                 _context.Add(user);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { message = "新增成功" });
             }
             return View(user);
         }
@@ -149,7 +153,7 @@ namespace power_usage_monitor.Controllers
             }
             
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { message = "已刪除該使用者" });
         }
 
         private bool UserExists(string id)

@@ -1,62 +1,84 @@
 ﻿@model power_usage_monitor.Models.Device
 
 @{
-    ViewData["Title"] = "Create";
-}
-@{
-    var data = new string[] { "1", "2", "3", "4", "5", "6", "7", "8" };
+    ViewData["Title"] = "新增設備";
 }
 
+<!--回傳訊息到TempData["message"]上，則會alert-->
+@if (TempData["message"] != null)
+{
+        <script>
+            var message = @Html.Raw(Json.Serialize(TempData["message"]));
+            alert(message);
+        </script>
 
+}
+<h1>新增設備</h1>
 
-<h1>Create</h1>
-
-<h4>Device</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="DeviceId" class="control-label"></label>
-                <input asp-for="DeviceId" class="form-control" />
+                <label @*asp-for="DeviceId"*@ class="control-label">設備插座編號(as DeviceID)</label>
+                <select asp-for="DeviceId" class="form-control" asp-items='ViewBag.deviceList'></select>
                 <span asp-validation-for="DeviceId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DeviceName" class="control-label"></label>
+                <label @*asp-for="DeviceName"*@ class="control-label">設備名稱</label>
                 <input asp-for="DeviceName" class="form-control" />
                 <span asp-validation-for="DeviceName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="UseTime" class="control-label"></label>
+                <label @*asp-for="UseTime"*@ class="control-label">設備使用時間(請以"00:00-23:59"格式輸入)</label>
                 <input asp-for="UseTime" class="form-control" />
                 <span asp-validation-for="UseTime" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <input asp-for="Status" class="form-control" readonly value="On"/>
+                <label @*asp-for="Status"*@ class="control-label">使用狀態</label>
+                <select asp-for="Status" class="form-control" id="Status">
+                    <option value="1">On</option>
+                    <option value="0">Off</option>
+                </select>
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CategoryId" class="control-label"></label>
-                <select class="form-control" id="CategoryId">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                </select>
+                <label @*asp-for="CategoryId"*@ class="control-label">選擇分類</label>
+                <select asp-for="CategoryId" class=" form-control" asp-items='ViewBag.categoryList'></select>
             </div>
-
-            <br>
-
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <label @*asp-for="CategoryId"*@ class="control-label">選擇使用者</label>
+                <select asp-for="UserName" class=" form-control" asp-items='ViewBag.userList'></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="新增" class="btn btn-primary" />
             </div>
         </form>
+
+@*        <hr />
+        <h3>新增分類</h3>
+        <form asp-action="CreateCategory">
+            <div class="form-group">
+                <label  class="control-label">分類名稱</label>
+                <input asp-for="Category.DeviceCategoryName" class="form-control" />
+                <span asp-validation-for="Category.DeviceCategoryName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label  class="control-label">分類平均使用瓦數</label>
+                <input asp-for="Category.CategoryAvgPower" class="form-control" />
+                <span asp-validation-for="Category.CategoryAvgPower" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="新增分類" class="btn btn-primary" />
+            </div>
+        </form>*@
+
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">回到設備列表</a>
 </div>
 
 @section Scripts {
